@@ -7,6 +7,8 @@ import DataTable from "../DataTable/DataTable";
 
 const Home = () => {
   const [datas, setDatas] = useState([]);
+  const [casho, setCasho] = useState([]);
+  const [payPals, setPaypals] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,9 +18,26 @@ const Home = () => {
     let paymentMode = e.target.paymentMode.value;
     let remark = e.target.remark.value;
     let data = { id, date, amount, remark, paymentMode };
-    // datas.push(data);
     setDatas([...datas, data]);
-    // localStorage.setItem("datas");
+  };
+
+  const getCash = () => {
+    let cash = datas.filter((data) => data.paymentMode === "Cash");
+    setCasho(cash);
+    setPaypals([]);
+  };
+
+  const getPaypal = () => {
+    let paypal = datas.filter((data) => data.paymentMode === "Paypal");
+    setPaypals(paypal);
+    setCasho([]);
+  };
+  const getAll = (datas) => {
+    // let all = datas.filter((data) => data.paymentMode === "Cash" || "Paypal");
+    setDatas(datas);
+    console.log(datas);
+    setCasho([]);
+    setPaypals([]);
   };
 
   return (
@@ -83,6 +102,19 @@ const Home = () => {
           </Col>
         </Form.Group>
         <div className="d-flex justify-content-end">
+          <Button
+            variant="dark text-white"
+            onClick={() => getAll(datas)}
+            className="mx-3 px-5"
+          >
+            All
+          </Button>
+          <Button variant="info" onClick={getPaypal} className="mx-3 px-5">
+            Paypal
+          </Button>
+          <Button onClick={getCash} className="mx-3 px-5">
+            Cash
+          </Button>
           <Button type="reset" className="mx-3 px-5" variant="outline-danger">
             CANCEL <br /> (ESC)
           </Button>
@@ -91,7 +123,7 @@ const Home = () => {
           </Button>
         </div>
       </Form>
-      <DataTable datas={datas} />
+      <DataTable payPals={payPals} casho={casho} datas={datas} />
     </div>
   );
 };
